@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CZUtils",
+        "repositoryURL": "https://github.com/geekaurora/CZUtils.git",
+        "state": {
+          "branch": null,
+          "revision": "4e7bad6797ea3c7dfe3d4c37b5678979e4d19f24",
+          "version": "3.2.8"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
