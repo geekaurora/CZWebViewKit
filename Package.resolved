@@ -6,8 +6,26 @@
         "repositoryURL": "https://github.com/geekaurora/CZUtils.git",
         "state": {
           "branch": null,
-          "revision": "4e7bad6797ea3c7dfe3d4c37b5678979e4d19f24",
-          "version": "3.2.8"
+          "revision": "36e26987fe4e09646a1df2d0149155a37fbea286",
+          "version": "3.4.6"
+        }
+      },
+      {
+        "package": "SwiftUIKit",
+        "repositoryURL": "https://github.com/geekaurora/SwiftUIKit.git",
+        "state": {
+          "branch": null,
+          "revision": "3d46476030aa29df3919cb26a273b489d0277a1d",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "package": "SwiftUIRedux",
+        "repositoryURL": "https://github.com/geekaurora/SwiftUIRedux.git",
+        "state": {
+          "branch": null,
+          "revision": "529768d06721e947168b49bfe31c7a224e5dccb3",
+          "version": "1.2.0"
         }
       }
     ]
