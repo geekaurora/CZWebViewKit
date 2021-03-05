@@ -1,6 +1,4 @@
-import SwiftUIKit
 import SwiftUIRedux
-import Combine
 import CZUtils
 
 /**
@@ -27,8 +25,3 @@ public class WebToIOSAction: ReduxActionProtocol, CustomStringConvertible {
     return dict.prettyDescription
   }
 }
-
-/**
-Action from Native to Web.
-*/
-public class IOSToWebAction: WebToIOSAction {}

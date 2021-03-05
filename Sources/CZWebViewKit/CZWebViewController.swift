@@ -183,16 +183,16 @@ extension CZWebViewController: WKScriptMessageHandler {
                                     didReceive message: WKScriptMessage) {
     dbgPrint("[Core] \(#function) - received script message: \(message)")
     
-    // * Silk: message/Action from Web.
+    // iOS/Web Bridging: message/Action from Web.
     if message.name == "test",
       let messageBody = (message.body as? [String: Any]).assertIfNil {
       
       if let actionType = messageBody["type"] as? String {
-        let silkAction = WebToIOSAction(
+        let action = WebToIOSAction(
           type: actionType,
           payload: messageBody["payload"] as! CZDictionary)
-        // Redux: dispatch silkAction with type/dict.
-        ReduxRootStore.shared.dispatch(action: silkAction)
+        // Redux: dispatch iOS/Web bridging Action with type/dict.
+        ReduxRootStore.shared.dispatch(action: action)
       }      
       print("[Core] Received WKScriptMessageHandler Message = \(messageBody)")
     }
