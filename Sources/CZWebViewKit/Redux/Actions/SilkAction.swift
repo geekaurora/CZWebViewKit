@@ -3,7 +3,7 @@ import SwiftUIRedux
 import Combine
 import CZUtils
 
-/*
+/**
  Action from Web to Native.
  */
 public class SilkToIOSAction: ReduxActionProtocol, CustomStringConvertible {
@@ -28,7 +28,7 @@ public class SilkToIOSAction: ReduxActionProtocol, CustomStringConvertible {
   }
 }
 
-/*
+/**
 Action from Native to Web.
 */
 public class SilkToWebAction: SilkToIOSAction {}

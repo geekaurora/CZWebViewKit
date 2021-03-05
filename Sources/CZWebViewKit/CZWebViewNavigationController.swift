@@ -5,7 +5,7 @@ import CZUtils
 
 public class CZWebViewNavigationController: UIViewController {
   
-  // Returns the top most webViewController in `navigationViewController`.
+  /// Returns the top most webViewController in `navigationViewController`.
   public var webViewController: CZWebViewController {
     let topMostViewController = (navigationViewController?.viewControllers.last as? CZWebViewController) ?? _webViewController
     return topMostViewController

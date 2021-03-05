@@ -25,7 +25,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   public private(set) lazy var webView: WKWebView = {
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
-    // * Briding message channel to native.
+    // Briding message channel to native.
     userContentController.add(self, name: "test")
     config.userContentController = userContentController
     let webView = WKWebView(frame: .zero, configuration: config)
@@ -214,11 +214,11 @@ public extension CZWebViewController {
     let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
     
     if shouldPresentLink {
-      // * Present for the different host.
+      // Present for the different host.
       CZWebViewNavigationController.present(url: navigationAction.request.url)
       decisionHandler(.cancel)
     } else if shouldPushLink {
-      // * Push for the same host.
+      // Push for the same host.
       CZWebViewNavigationController.pushWebViewController(
         url: navigationAction.request.url,
         navigationBarType: navigationBarType,
@@ -241,10 +241,10 @@ public extension CZWebViewController {
 
 public extension CZWebViewController {
   /**
-   * Force all popup windows to remain in the current WKWebView.
-   * By default, WKWebView is blocking new windows from being created
-   * ex <a href="link" target="_blank">text</a>.
-   * This code catches those popup windows and displays them in the current WKWebView.
+   Force all popup windows to remain in the current WKWebView.
+   By default, WKWebView is blocking new windows from being created
+   ex <a href="link" target="_blank">text</a>.
+   This code catches those popup windows and displays them in the current WKWebView.
    */
   func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
     
