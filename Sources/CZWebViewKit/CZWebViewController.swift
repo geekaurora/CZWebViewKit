@@ -188,7 +188,7 @@ extension CZWebViewController: WKScriptMessageHandler {
       let messageBody = (message.body as? [String: Any]).assertIfNil {
       
       if let actionType = messageBody["type"] as? String {
-        let silkAction = SilkToIOSAction(
+        let silkAction = WebToIOSAction(
           type: actionType,
           payload: messageBody["payload"] as! CZDictionary)
         // Redux: dispatch silkAction with type/dict.

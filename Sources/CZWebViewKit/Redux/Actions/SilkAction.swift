@@ -6,12 +6,12 @@ import CZUtils
 /**
  Action from Web to Native.
  */
-public class SilkToIOSAction: ReduxActionProtocol, CustomStringConvertible {
+public class WebToIOSAction: ReduxActionProtocol, CustomStringConvertible {
   public var type: String
   public var payload: CZDictionary?
   public static let defaultType = "default"
   
-  public init(type: String = SilkToIOSAction.defaultType,
+  public init(type: String = WebToIOSAction.defaultType,
               payload: CZDictionary? = nil) {
     self.type = type
     self.payload = payload
@@ -31,4 +31,4 @@ public class SilkToIOSAction: ReduxActionProtocol, CustomStringConvertible {
 /**
 Action from Native to Web.
 */
-public class SilkToWebAction: SilkToIOSAction {}
+public class IOSToWebAction: WebToIOSAction {}
