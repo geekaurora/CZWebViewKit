@@ -3,6 +3,9 @@ import Combine
 import WebKit
 import CZUtils
 
+/**
+ NavigationController that maintains the underling WebViewController.
+*/
 public class CZWebViewNavigationController: UIViewController {
   
   /// Returns the top most webViewController in `navigationViewController`.

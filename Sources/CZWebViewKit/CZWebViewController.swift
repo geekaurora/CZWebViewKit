@@ -37,26 +37,26 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   
   private var progressView: UIProgressView?
 
-  lazy var goBackButtonItem: UIBarButtonItem = {
+  private lazy var goBackButtonItem: UIBarButtonItem = {
     let chevronLeft = UIImage(systemName: "chevron.left")
     let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: webView, action: #selector(webView.goBack))
     buttonItem.isEnabled = webView.canGoBack
     return buttonItem
   }()
   
-  lazy var goForwardButtonItem: UIBarButtonItem = {
+  private lazy var goForwardButtonItem: UIBarButtonItem = {
     let chevronLeft = UIImage(systemName: "chevron.right")
     let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: webView, action: #selector(webView.goForward))
     buttonItem.isEnabled = webView.canGoBack
     return buttonItem
   }()
   
-  lazy var cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelBarButtonItemTapped))
+  private lazy var cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelBarButtonItemTapped))
   @objc func cancelBarButtonItemTapped() {
     self.navigationController?.popViewController(animated: true)
   }
   
-  lazy var refreshBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshBarButtonItemTapped))
+  private lazy var refreshBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshBarButtonItemTapped))
   
   @objc func refreshBarButtonItemTapped() {
     webView.reload()
@@ -79,8 +79,6 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
   
   public override func loadView() {
-    //    view = UIView()
-    //    webView.overlayOnSuperViewController(self)
     view = webView
     initSubviews()
   }
@@ -109,7 +107,6 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
       navigationItem.setLeftBarButtonItems([goBackButtonItem, goForwardButtonItem], animated: false)
       navigationItem.setRightBarButton(refreshBarButtonItem, animated: false)
     case .system:
-//      systemGoBackButtonItem
       navigationItem.backBarButtonItem = UIBarButtonItem(
         title: "",
 //        image: UIImage(systemName: "chevron.left"),
@@ -154,7 +151,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   }
 }
 
-// MARK: - Bridging: Native => Web
+// MARK: - Bridging: Native to Web
 
 private extension CZWebViewController {
   /**
@@ -172,7 +169,7 @@ private extension CZWebViewController {
   }
 }
 
-// MARK: - WKScriptMessageHandler - Bridging: Web => Native
+// MARK: - WKScriptMessageHandler - Bridging: Web to Native
 
 extension CZWebViewController: WKScriptMessageHandler {
   /**

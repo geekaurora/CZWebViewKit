@@ -2,7 +2,7 @@ import SwiftUIRedux
 import CZUtils
 
 /**
- Action from Web to Native.
+ Bridging Action from Web to Native.
  */
 public class WebToIOSAction: ReduxActionProtocol, CustomStringConvertible {
   public var type: String

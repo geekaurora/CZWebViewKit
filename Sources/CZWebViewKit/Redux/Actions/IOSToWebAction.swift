@@ -1,6 +1,6 @@
 import CZUtils
 
 /**
-Action from Native to Web.
+ Bridging  Action from Native to Web.
 */
 public class IOSToWebAction: WebToIOSAction {}
