@@ -34,7 +34,8 @@ public class CZWebViewNavigationController: UIViewController {
   required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
   
   public static func present(url: URL? = nil,
-                             navigationBarType: CZWebViewNavigationBarType = .none,
+                             //navigationBarType: CZWebViewNavigationBarType = .none,
+                             navigationBarType: CZWebViewNavigationBarType = .web,
                              shouldPopupWhenTapLink: Bool = false) {
     let webViewNavigationController = CZWebViewNavigationController(
       url: url,

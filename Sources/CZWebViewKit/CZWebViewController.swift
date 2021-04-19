@@ -208,7 +208,11 @@ public extension CZWebViewController {
     dbgPrint("[Core] \(#function) - navigationAction.request.url = \(navigationAction.request.url)")
     
     let shouldPresentLink = (shouldPopupWhenTapLink && navigationAction.request.url?.host != initialHostName)
-    let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
+    
+    // TODO: Fix bug push multi times when load url - sub pages?
+    // Push to navigationController - native experience of navigationControlle, instead of Web.
+    // let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
+    let shouldPushLink = false
     
     if shouldPresentLink {
       // Present for the different host.
