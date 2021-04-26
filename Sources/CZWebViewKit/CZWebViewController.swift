@@ -3,7 +3,7 @@ import WebKit
 import CZUtils
 import SwiftUIRedux
 
-/// Delegate that gets notified when State of web view updates.
+/// Delegate that gets notified when the web view state updates.
 public protocol CZWebViewControllerDelegate: class {
   func webViewDidFinishLoading(html: String?, error: Error?)
 }
@@ -285,9 +285,8 @@ extension CZWebViewController {
       // Read HTML from WebView.
       if !webView.isLoading {
         webView.evaluateJavaScript(
-          "document.body.innerHTML",                              // HTML: after execution. e.g. 最新评价(54)
-          // "document.documentElement.outerHTML.toString()",     // All HTML: before execution
-          // "document.documentElement.innerHTML",
+          "document.body.innerHTML",                              // HTML: excludes tag
+          // "document.documentElement.outerHTML.toString()",     // HTML: includes tag
           completionHandler: { [weak self] (html: Any?, error: Error?) in
             self?.delegate?.webViewDidFinishLoading(html: html as? String, error: error)
           })
