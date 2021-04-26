@@ -3,6 +3,11 @@ import WebKit
 import CZUtils
 import SwiftUIRedux
 
+/// Delegate that gets notified when State of web view updates.
+public protocol CZWebViewControllerDelegate: class {
+  func webViewDidFinishLoading(html: String?, error: Error?)
+}
+
 /**
  ### Usage
  ```
@@ -21,6 +26,8 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private var shouldPopupWhenTapLink: Bool
   private var initialHostName: String?
   private var showLoadingProgress: Bool
+  
+  public var delegate: CZWebViewControllerDelegate?
   
   public private(set) lazy var webView: WKWebView = {
     let config = WKWebViewConfiguration()
@@ -276,31 +283,13 @@ extension CZWebViewController {
       progressView?.isHidden = !webView.isLoading
       
       // Read HTML from WebView.
-      // "document.documentElement.outerHTML.toString()"
       if !webView.isLoading {
         webView.evaluateJavaScript(
-          "document.body.innerHTML", // 最新评价(54) -  // HTML: after execution
-          // "document.documentElement.outerHTML.toString()", // All HTML: before execution
+          "document.body.innerHTML",                              // HTML: after execution. e.g. 最新评价(54)
+          // "document.documentElement.outerHTML.toString()",     // All HTML: before execution
           // "document.documentElement.innerHTML",
-          completionHandler: { (html: Any?, error: Error?) in
-            print(html)
-            
-          })
-        
-        // <div class="m-comments m-comments-white"><h4 class="cmt_title">最新评论(54)</h4>
-        let findElementHtml = """
-            document.getElementsByClassName('cmt_title')[1].innerHTML
-        """
-        // "document.getElementsByClassName('cmt_title')[1].innerHTML",   // iPhone - ok
-        // "document.getElementsByClassName('j-flag')[0].innerHTML",
-        // "document.getElementsByClassName('f-ff2')[0].innerHTML",
-        // "document.getElementById('g_iframe').innerHTML.toString()",    // iPad
-        
-        webView.evaluateJavaScript(
-          findElementHtml,
-          completionHandler: { (html: Any?, error: Error?) in
-            print("cmt_title = \(html)")
-
+          completionHandler: { [weak self] (html: Any?, error: Error?) in
+            self?.delegate?.webViewDidFinishLoading(html: html as? String, error: error)
           })
       }
       
