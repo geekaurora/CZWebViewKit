@@ -279,7 +279,7 @@ extension CZWebViewController {
                                     context: UnsafeMutableRawPointer?) {
     switch (keyPath) {
     case #keyPath(WKWebView.isLoading):
-      print("webView.isLoading = \(webView.isLoading), old = \(change?[.oldKey])")
+      print("webView.isLoading = \(webView.isLoading)")
       progressView?.isHidden = !webView.isLoading
       
       // Read HTML from WebView.
