@@ -3,6 +3,11 @@ import WebKit
 import CZUtils
 import SwiftUIRedux
 
+/// Delegate that gets notified when the web view state updates.
+public protocol CZWebViewControllerDelegate: class {
+  func webViewDidFinishLoading(html: String?, error: Error?)
+}
+
 /**
  ### Usage
  ```
@@ -22,10 +27,12 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private var initialHostName: String?
   private var showLoadingProgress: Bool
   
+  public var delegate: CZWebViewControllerDelegate?
+  
   public private(set) lazy var webView: WKWebView = {
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
-    // Briding message channel to native.
+    // Bridging message channel to native.
     userContentController.add(self, name: "test")
     config.userContentController = userContentController
     let webView = WKWebView(frame: .zero, configuration: config)
@@ -274,6 +281,17 @@ extension CZWebViewController {
     case #keyPath(WKWebView.isLoading):
       print("webView.isLoading = \(webView.isLoading)")
       progressView?.isHidden = !webView.isLoading
+      
+      // Read HTML from WebView.
+      if !webView.isLoading {
+        webView.evaluateJavaScript(
+          "document.body.innerHTML",                              // HTML: excludes tag
+          // "document.documentElement.outerHTML.toString()",     // HTML: includes tag
+          completionHandler: { [weak self] (html: Any?, error: Error?) in
+            self?.delegate?.webViewDidFinishLoading(html: html as? String, error: error)
+          })
+      }
+      
     case #keyPath(WKWebView.estimatedProgress):
       progressView?.progress = Float(webView.estimatedProgress)
     case #keyPath(WKWebView.canGoBack):
@@ -288,7 +306,7 @@ extension CZWebViewController {
   }
   
   func setupObservers() {
-    view.addObserver(self, forKeyPath: #keyPath(WKWebView.isLoading), options: .new, context: nil)
+    view.addObserver(self, forKeyPath: #keyPath(WKWebView.isLoading), options: [.old, .new], context: nil)
     view.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     view.addObserver(self, forKeyPath: #keyPath(WKWebView.title), options: .new, context: nil)
     view.addObserver(self, forKeyPath: #keyPath(WKWebView.url), options: .new, context: nil)
