@@ -279,20 +279,23 @@ extension CZWebViewController {
       // "document.documentElement.outerHTML.toString()"
       if !webView.isLoading {
         webView.evaluateJavaScript(
-          "document.body.innerHTML", // 最新评价(54)
-          // "document.documentElement.outerHTML.toString()",
+          "document.body.innerHTML", // 最新评价(54) -  // HTML: after execution
+          // "document.documentElement.outerHTML.toString()", // All HTML: before execution
+          // "document.documentElement.innerHTML",
           completionHandler: { (html: Any?, error: Error?) in
-            print(html)
+            // print(html)
             
           })
         
         // <div class="m-comments m-comments-white"><h4 class="cmt_title">最新评论(54)</h4>
         webView.evaluateJavaScript(
-          //"document.getElementsByClassName('cmt_title')[0].toString()",
-          "document.getElementsByClassName('cmt_title')[1].innerHTML",
+          // "document.getElementsByClassName('cmt_title')[1].innerHTML",
+          // "document.getElementsByClassName('j-flag')[0].innerHTML",
+          // "document.getElementsByClassName('f-ff2')[0].innerHTML",
+          "document.getElementById('g_iframe2').innerHTML.toString()",
           completionHandler: { (html: Any?, error: Error?) in
             print("cmt_title = \(html)")
-            
+
           })
         
         
