@@ -276,12 +276,12 @@ extension CZWebViewController {
       progressView?.isHidden = !webView.isLoading
       
       // Read HTML from WebView.
+      // "document.documentElement.outerHTML.toString()"
       if !webView.isLoading {
         webView.evaluateJavaScript(
           "document.body.innerHTML",
-//          "document.documentElement.outerHTML.toString()",
           completionHandler: { (html: Any?, error: Error?) in
-            // print(html)
+            print(html)
             
           })
       }
