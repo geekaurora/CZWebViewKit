@@ -25,7 +25,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   public private(set) lazy var webView: WKWebView = {
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
-    // Briding message channel to native.
+    // Bridging message channel to native.
     userContentController.add(self, name: "test")
     config.userContentController = userContentController
     let webView = WKWebView(frame: .zero, configuration: config)
@@ -272,8 +272,20 @@ extension CZWebViewController {
                                     context: UnsafeMutableRawPointer?) {
     switch (keyPath) {
     case #keyPath(WKWebView.isLoading):
-      print("webView.isLoading = \(webView.isLoading)")
+      print("webView.isLoading = \(webView.isLoading), old = \(change?[.oldKey])")
       progressView?.isHidden = !webView.isLoading
+      
+      // Read HTML from WebView.
+      if !webView.isLoading {
+        webView.evaluateJavaScript(
+          "document.body.innerHTML",
+//          "document.documentElement.outerHTML.toString()",
+          completionHandler: { (html: Any?, error: Error?) in
+            // print(html)
+            
+          })
+      }
+      
     case #keyPath(WKWebView.estimatedProgress):
       progressView?.progress = Float(webView.estimatedProgress)
     case #keyPath(WKWebView.canGoBack):
@@ -288,7 +300,7 @@ extension CZWebViewController {
   }
   
   func setupObservers() {
-    view.addObserver(self, forKeyPath: #keyPath(WKWebView.isLoading), options: .new, context: nil)
+    view.addObserver(self, forKeyPath: #keyPath(WKWebView.isLoading), options: [.old, .new], context: nil)
     view.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     view.addObserver(self, forKeyPath: #keyPath(WKWebView.title), options: .new, context: nil)
     view.addObserver(self, forKeyPath: #keyPath(WKWebView.url), options: .new, context: nil)
