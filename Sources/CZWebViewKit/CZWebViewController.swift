@@ -137,7 +137,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
       return
     }
     
-    CZPerfTracker.shared.end(label: "CZWebViewController_BeforeRequest")
+    CZPerfTracker.shared.endTracking(label: "CZWebViewController_BeforeRequest")
     self.url = url
     webView.load(URLRequest(url: url))
   }
@@ -226,7 +226,7 @@ public extension CZWebViewController {
     // let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
     let shouldPushLink = false
     
-    CZPerfTracker.shared.start(label: "CZWebViewController_BeforeRequest")
+    CZPerfTracker.shared.beginTracking(label: "CZWebViewController_BeforeRequest")
     
     if shouldPresentLink {
       // Present for the different host.
