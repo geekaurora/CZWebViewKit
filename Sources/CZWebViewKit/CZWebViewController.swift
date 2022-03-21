@@ -8,6 +8,9 @@ public protocol CZWebViewControllerDelegate: class {
 }
 
 /**
+ WebViewController that mantains an underlying WKWebView, which supports bridging messages from javascript to the native.
+ And it conforms WKUIDelegate, WKNavigationDelegate.
+ 
  ### Usage
  ```
  /// Load reomote URL.
@@ -31,7 +34,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   public private(set) lazy var webView: WKWebView = {
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
-    // Bridging message channel to native.
+    // Bridging message channel to the native.
     userContentController.add(self, name: "test")
     config.userContentController = userContentController
     let webView = WKWebView(frame: .zero, configuration: config)
@@ -42,7 +45,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   }()
   
   private var progressView: UIProgressView?
-
+  
   private lazy var goBackButtonItem: UIBarButtonItem = {
     let chevronLeft = UIImage(systemName: "chevron.left")
     let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: webView, action: #selector(webView.goBack))
@@ -58,6 +61,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   }()
   
   private lazy var cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelBarButtonItemTapped))
+  
   @objc func cancelBarButtonItemTapped() {
     self.navigationController?.popViewController(animated: true)
   }
@@ -115,7 +119,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     case .system:
       navigationItem.backBarButtonItem = UIBarButtonItem(
         title: "",
-//        image: UIImage(systemName: "chevron.left"),
+        //        image: UIImage(systemName: "chevron.left"),
         style: .plain,
         target: nil,
         action: nil)
@@ -179,25 +183,25 @@ private extension CZWebViewController {
 
 extension CZWebViewController: WKScriptMessageHandler {
   /**
-   Handle message from javascript.
+   Handle `message` from javascript.
    Run: load test.htm with CZWebViewController.
    */
   public func userContentController(_ userContentController: WKUserContentController,
                                     didReceive message: WKScriptMessage) {
     dbgPrint("[Core] \(#function) - received script message: \(message)")
     
-    // iOS/Web Bridging: message/Action from Web.
+    // iOS/Web bridging: message/Action from Web.
     if message.name == "test",
-      let messageBody = (message.body as? [String: Any]).assertIfNil {
+       let messageBody = (message.body as? [String: Any]).assertIfNil {
       
       if let actionType = messageBody["type"] as? String {
         let action = WebToIOSAction(
           type: actionType,
           payload: messageBody["payload"] as! CZDictionary)
-        // Redux: dispatch iOS/Web bridging Action with type/dict.
+        // Redux: dispatch iOS/Web bridging Action with type and payload(dict).
         ReduxRootStore.shared.dispatch(action: action)
       }      
-      print("[Core] Received WKScriptMessageHandler Message = \(messageBody)")
+      dbgPrint("[Core] Received WKScriptMessageHandler Message = \(messageBody)")
     }
   }
 }
@@ -237,7 +241,8 @@ public extension CZWebViewController {
     }
   }
   
-  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+  func webView(_ webView: WKWebView,
+               didFinish navigation: WKNavigation!) {
     if navigationBarType == .web {
       title = webView.title
     }
@@ -253,7 +258,10 @@ public extension CZWebViewController {
    ex <a href="link" target="_blank">text</a>.
    This code catches those popup windows and displays them in the current WKWebView.
    */
-  func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+  func webView(_ webView: WKWebView,
+               createWebViewWith configuration: WKWebViewConfiguration,
+               for navigationAction: WKNavigationAction,
+               windowFeatures: WKWindowFeatures) -> WKWebView? {
     
     // open in current view
     webView.load(navigationAction.request)
@@ -262,7 +270,10 @@ public extension CZWebViewController {
     return nil;
   }
   
-  func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+  func webView(_ webView: WKWebView,
+               runJavaScriptAlertPanelWithMessage message: String,
+               initiatedByFrame frame: WKFrameInfo,
+               completionHandler: @escaping () -> Void) {
     CZAlertManager.showAlert(message: message)
     completionHandler()
   }
@@ -278,7 +289,7 @@ extension CZWebViewController {
                                     context: UnsafeMutableRawPointer?) {
     switch (keyPath) {
     case #keyPath(WKWebView.isLoading):
-      print("webView.isLoading = \(webView.isLoading)")
+      dbgPrint("webView.isLoading = \(webView.isLoading)")
       progressView?.isHidden = !webView.isLoading
       
       // Read HTML from WebView.

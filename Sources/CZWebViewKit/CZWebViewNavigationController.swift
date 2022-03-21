@@ -2,7 +2,7 @@ import WebKit
 import CZUtils
 
 /**
- NavigationController that maintains the underling WebViewController.
+ NavigationController that maintains the underlying WebViewController.
 */
 public class CZWebViewNavigationController: UIViewController {
   
@@ -81,7 +81,7 @@ public class CZWebViewNavigationController: UIViewController {
 
 private extension CZWebViewNavigationController{
   func initSubviews() {
-    if (navigationBarType != .none) {
+    if navigationBarType != .none {
       navigationViewController = UINavigationController(rootViewController: _webViewController)
       navigationViewController?.overlayOnSuperViewController(self)
     } else {
