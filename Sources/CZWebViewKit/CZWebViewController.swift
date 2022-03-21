@@ -135,8 +135,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   public func loadURL(_ url: URL?) {
     guard let url = url else {
       return
-    }
-    
+    }    
     CZPerfTracker.shared.endTracking(label: "CZWebViewController_BeforeRequest")
     self.url = url
     webView.load(URLRequest(url: url))
