@@ -32,16 +32,10 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   public var delegate: CZWebViewControllerDelegate?
   
   public private(set) lazy var webView: WKWebView = {
-    let config = WKWebViewConfiguration()
-    let userContentController = WKUserContentController()
-    // Bridging message channel to the native.
-    userContentController.add(self, name: "test")
-    config.userContentController = userContentController
-    let webView = WKWebView(frame: .zero, configuration: config)
-    
-    webView.uiDelegate = self
-    webView.navigationDelegate = self
-    return webView
+    return CZWebViewFactory.createWebView(
+      scriptMessageHandler: self,
+      uiDelegate: self,
+      navigationDelegate: self)
   }()
   
   private var progressView: UIProgressView?
@@ -135,8 +129,8 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   public func loadURL(_ url: URL?) {
     guard let url = url else {
       return
-    }    
-    CZPerfTracker.shared.endTracking(label: "CZWebViewController_BeforeRequest")
+    }
+    CZPerfTracker.shared.endTracking(event: "CZWebViewController_BeforeRequest")
     self.url = url
     webView.load(URLRequest(url: url))
   }
@@ -225,7 +219,7 @@ public extension CZWebViewController {
     // let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
     let shouldPushLink = false
     
-    CZPerfTracker.shared.beginTracking(label: "CZWebViewController_BeforeRequest")
+    CZPerfTracker.shared.beginTracking(event: "CZWebViewController_BeforeRequest")
     
     if shouldPresentLink {
       // Present for the different host.
