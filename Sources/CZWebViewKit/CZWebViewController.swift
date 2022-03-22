@@ -82,8 +82,8 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     super.init(nibName: nil, bundle: .main)
     
     // Set up the injected WebView if applicable.
+    // TODO: set scriptMessageHandler in WKWebViewConfiguration.
     if let injectedWebView = injectedWebView {
-      // TODO: set scriptMessageHandler in WKWebViewConfiguration.
       self.webView = injectedWebView
       self.webView.uiDelegate = self
       self.webView.navigationDelegate = self
