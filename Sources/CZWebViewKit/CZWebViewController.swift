@@ -240,7 +240,7 @@ public extension CZWebViewController {
     if shouldPresentLink {
       // Prefetch earlier for webView: faster duration = WebViewController initialization + presentation.
       // CZWebViewController_BeforeRequest duration: before = 23ms; after = 4ms.
-      let prefetchContainer: CZWebViewPrefetchContainer? = CZWebViewPrefetchManager.shared.prefetch(url: url!)
+      let prefetchContainer: CZWebViewPrefetchContainer? = !CZWebViewKitConstants.enablePrefetch ? nil : CZWebViewPrefetchManager.shared.prefetch(url: url!)
       
       // Present for the different host.
       CZWebViewNavigationController.present(
