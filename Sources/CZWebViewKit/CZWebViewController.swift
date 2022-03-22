@@ -82,9 +82,8 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     super.init(nibName: nil, bundle: .main)
     
     // Set up the injected WebView if applicable.
+    // TODO: set scriptMessageHandler in WKWebViewConfiguration.
     if let injectedWebView = injectedWebView {
-      // Set the `injectedWebView` as self.webView.
-      // TODO: set scriptMessageHandler in WKWebViewConfiguration.
       self.webView = injectedWebView
       self.webView.uiDelegate = self
       self.webView.navigationDelegate = self
@@ -102,6 +101,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    updateTitleIfNeeded()
   }
   
   private func initSubviews() {
@@ -232,22 +232,21 @@ public extension CZWebViewController {
     
     // TODO: Fix bug push multi times when load url - sub pages?
     // Push to navigationController - native experience of navigationControlle, instead of Web.
-    // let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
+    // let shouldPushLink = (url != self.url && navigationController != nil)
     let shouldPushLink = false
     
     CZPerfTracker.shared.beginTracking(event: "CZWebViewController_BeforeRequest")
     
     if shouldPresentLink {
-      // Prefetch for webView earlier.
-      let prefetchContainer = CZWebViewPrefetchManager.shared.prefetch(url: url!)
+      // Prefetch earlier for webView: faster duration = WebViewController initialization + presentation.
+      // CZWebViewController_BeforeRequest duration: before = 23ms; after = 4ms.
+      let prefetchContainer: CZWebViewPrefetchContainer? = !CZWebViewKitConstants.enablePrefetch ? nil : CZWebViewPrefetchManager.shared.prefetch(url: url!)
       
-      MainQueueScheduler.asyncAfter(2) {
-        // Present for the different host.
-        CZWebViewNavigationController.present(
-          url: url,
-          injectedWebView: prefetchContainer.webView
-        )
-      }
+      // Present for the different host.
+      CZWebViewNavigationController.present(
+        url: url,
+        injectedWebView: prefetchContainer?.webView
+      )
       decisionHandler(.cancel)
     } else if shouldPushLink {
       // Push for the same host.
@@ -264,10 +263,8 @@ public extension CZWebViewController {
   
   func webView(_ webView: WKWebView,
                didFinish navigation: WKNavigation!) {
-    if navigationBarType == .web {
-      title = webView.title
-    }
-  }  
+    updateTitleIfNeeded()
+  }
 }
 
 // MARK: - WKUIDelegate
@@ -366,5 +363,11 @@ extension CZWebViewController {
     //      //      subscriber(for: \.hasOnlySecureContent),
     //      //      subscriber(for: \.serverTrust),
     //    ]
+  }
+  
+  func updateTitleIfNeeded() {
+    if navigationBarType == .web {
+      title = webView.title
+    }
   }
 }
