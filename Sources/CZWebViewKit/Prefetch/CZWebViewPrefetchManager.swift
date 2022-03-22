@@ -7,11 +7,10 @@ class CZWebViewPrefetchManager {
   
   private var prefetchContainerMap = [URL: CZWebViewPrefetchContainer]()
   
-  func prefetch(url: URL?) {
-    guard let url = url.assertIfNil else {
-      return
-    }
+  @discardableResult
+  func prefetch(url: URL) -> CZWebViewPrefetchContainer {
     let prefetchContainer = prefetchContainerMap[url] ?? CZWebViewPrefetchContainer(url: url)
     prefetchContainer.loadURL(url)
+    return prefetchContainer
   }
 }

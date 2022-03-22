@@ -70,7 +70,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private var observers: [NSKeyValueObservation] = []
   
   public init(url: URL? = nil,
-              externalWebView: WKWebView? = nil,
+              injectedWebView: WKWebView? = nil,
               navigationBarType: CZWebViewNavigationBarType = .none,
               shouldPopupWhenTapLink: Bool = true,
               showLoadingProgress: Bool = true) {
@@ -80,9 +80,9 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     self.showLoadingProgress = showLoadingProgress
     super.init(nibName: nil, bundle: .main)
     
-    if let externalWebView = externalWebView {
-      // Set the injected `externalWebView` as self.webView.
-      self.webView = externalWebView
+    if let injectedWebView = injectedWebView {
+      // Set the `injectedWebView` as self.webView.
+      self.webView = injectedWebView
     }
   }
   
@@ -216,9 +216,10 @@ public extension CZWebViewController {
     if initialHostName == nil {
       initialHostName = navigationAction.request.url?.host
     }
-    dbgPrint("[Core] \(#function) - navigationAction.request.url = \(navigationAction.request.url)")
+    let url = navigationAction.request.url
+    dbgPrint("[Core] \(#function) - navigationAction.request.url = \(url)")
     
-    let shouldPresentLink = (shouldPopupWhenTapLink && navigationAction.request.url?.host != initialHostName)
+    let shouldPresentLink = (shouldPopupWhenTapLink && url?.host != initialHostName)
     
     // TODO: Fix bug push multi times when load url - sub pages?
     // Push to navigationController - native experience of navigationControlle, instead of Web.
@@ -228,13 +229,21 @@ public extension CZWebViewController {
     CZPerfTracker.shared.beginTracking(event: "CZWebViewController_BeforeRequest")
     
     if shouldPresentLink {
-      // Present for the different host.
-      CZWebViewNavigationController.present(url: navigationAction.request.url)
+      // Prefetch for webView earlier.
+      let prefetchContainer = CZWebViewPrefetchManager.shared.prefetch(url: url!)
+      
+      MainQueueScheduler.asyncAfter(2) {
+        // Present for the different host.
+        CZWebViewNavigationController.present(
+          url: url,
+          injectedWebView: prefetchContainer.webView
+        )
+      }
       decisionHandler(.cancel)
     } else if shouldPushLink {
       // Push for the same host.
       CZWebViewNavigationController.pushWebViewController(
-        url: navigationAction.request.url,
+        url: url,
         navigationBarType: navigationBarType,
         shouldPopupWhenTapLink: shouldPopupWhenTapLink,
         navigationController: navigationController)
