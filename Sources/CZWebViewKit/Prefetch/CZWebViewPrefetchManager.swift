@@ -10,9 +10,10 @@ class CZWebViewPrefetchManager {
   @discardableResult
   func prefetch(url: URL) -> CZWebViewPrefetchContainer {
     let prefetchContainer: CZWebViewPrefetchContainer = {
-      if let prefetchContainer = prefetchContainerMap[url] {
-        return prefetchContainer
-      }
+      // TODO: Reuse prefetchContainer after fix crash.
+//      if let prefetchContainer = prefetchContainerMap[url] {
+//        return prefetchContainer
+//      }
       return CZWebViewPrefetchContainer(url: url)
     }()
     prefetchContainerMap[url] = prefetchContainer
