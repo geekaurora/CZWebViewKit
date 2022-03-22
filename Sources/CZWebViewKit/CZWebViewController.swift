@@ -232,23 +232,21 @@ public extension CZWebViewController {
     
     // TODO: Fix bug push multi times when load url - sub pages?
     // Push to navigationController - native experience of navigationControlle, instead of Web.
-    // let shouldPushLink = (navigationAction.request.url != self.url && navigationController != nil)
+    // let shouldPushLink = (url != self.url && navigationController != nil)
     let shouldPushLink = false
     
     CZPerfTracker.shared.beginTracking(event: "CZWebViewController_BeforeRequest")
     
     if shouldPresentLink {
-      // Prefetch for webView earlier.
-      var prefetchContainer: CZWebViewPrefetchContainer? = CZWebViewPrefetchManager.shared.prefetch(url: url!)
-      // prefetchContainer = nil
+      // Prefetch earlier for webView: faster duration = WebViewController initialization + presentation.
+      // CZWebViewController_BeforeRequest duration: before = 23ms; after = 4ms.
+      let prefetchContainer: CZWebViewPrefetchContainer? = CZWebViewPrefetchManager.shared.prefetch(url: url!)
       
-      MainQueueScheduler.asyncAfter(3) {
-        // Present for the different host.
-        CZWebViewNavigationController.present(
-          url: url,
-          injectedWebView: prefetchContainer?.webView
-        )
-      }
+      // Present for the different host.
+      CZWebViewNavigationController.present(
+        url: url,
+        injectedWebView: prefetchContainer?.webView
+      )
       decisionHandler(.cancel)
     } else if shouldPushLink {
       // Push for the same host.

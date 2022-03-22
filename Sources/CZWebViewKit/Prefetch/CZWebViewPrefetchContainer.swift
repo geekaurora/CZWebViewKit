@@ -21,6 +21,7 @@ class CZWebViewPrefetchContainer: NSObject {
       return
     }
     self.url = url
+    CZPerfTracker.shared.endTracking(event: "CZWebViewController_BeforeRequest")
     webView.load(URLRequest(url: url))
   }
 }
