@@ -18,12 +18,14 @@ public class CZWebViewNavigationController: UIViewController {
   private var shouldPopupWhenTapLink: Bool
 
   public init(url: URL? = nil,
+              injectedWebView: WKWebView? = nil,
               navigationBarType: CZWebViewNavigationBarType = .none,
               shouldPopupWhenTapLink: Bool = true) {
     self.navigationBarType = navigationBarType
     self.shouldPopupWhenTapLink = shouldPopupWhenTapLink
     self._webViewController = CZWebViewController(
       url: url,
+      injectedWebView: injectedWebView,
       navigationBarType: navigationBarType,
       shouldPopupWhenTapLink: shouldPopupWhenTapLink)
     super.init(nibName: nil, bundle: .main)
@@ -32,11 +34,13 @@ public class CZWebViewNavigationController: UIViewController {
   required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
   
   public static func present(url: URL? = nil,
+                             injectedWebView: WKWebView? = nil,
                              //navigationBarType: CZWebViewNavigationBarType = .none,
                              navigationBarType: CZWebViewNavigationBarType = .web,
                              shouldPopupWhenTapLink: Bool = false) {
     let webViewNavigationController = CZWebViewNavigationController(
       url: url,
+      injectedWebView: injectedWebView,
       navigationBarType:navigationBarType,
       shouldPopupWhenTapLink: shouldPopupWhenTapLink)
     UIViewController.topMost()?.present(webViewNavigationController, animated: true, completion: nil)
