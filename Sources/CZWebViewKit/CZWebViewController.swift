@@ -70,6 +70,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private var observers: [NSKeyValueObservation] = []
   
   public init(url: URL? = nil,
+              externalWebView: WKWebView? = nil,
               navigationBarType: CZWebViewNavigationBarType = .none,
               shouldPopupWhenTapLink: Bool = true,
               showLoadingProgress: Bool = true) {
@@ -78,6 +79,11 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     self.shouldPopupWhenTapLink = shouldPopupWhenTapLink
     self.showLoadingProgress = showLoadingProgress
     super.init(nibName: nil, bundle: .main)
+    
+    if let externalWebView = externalWebView {
+      // Set the injected `externalWebView` as self.webView.
+      self.webView = externalWebView
+    }
   }
   
   required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
