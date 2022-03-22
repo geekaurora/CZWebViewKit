@@ -101,6 +101,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    updateTitleIfNeeded()
   }
   
   private func initSubviews() {
@@ -238,13 +239,14 @@ public extension CZWebViewController {
     
     if shouldPresentLink {
       // Prefetch for webView earlier.
-      let prefetchContainer = CZWebViewPrefetchManager.shared.prefetch(url: url!)
+      var prefetchContainer: CZWebViewPrefetchContainer? = CZWebViewPrefetchManager.shared.prefetch(url: url!)
+      // prefetchContainer = nil
       
-      MainQueueScheduler.asyncAfter(2) {
+      MainQueueScheduler.asyncAfter(3) {
         // Present for the different host.
         CZWebViewNavigationController.present(
           url: url,
-          injectedWebView: prefetchContainer.webView
+          injectedWebView: prefetchContainer?.webView
         )
       }
       decisionHandler(.cancel)
@@ -263,10 +265,8 @@ public extension CZWebViewController {
   
   func webView(_ webView: WKWebView,
                didFinish navigation: WKNavigation!) {
-    if navigationBarType == .web {
-      title = webView.title
-    }
-  }  
+    updateTitleIfNeeded()
+  }
 }
 
 // MARK: - WKUIDelegate
@@ -365,5 +365,11 @@ extension CZWebViewController {
     //      //      subscriber(for: \.hasOnlySecureContent),
     //      //      subscriber(for: \.serverTrust),
     //    ]
+  }
+  
+  func updateTitleIfNeeded() {
+    if navigationBarType == .web {
+      title = webView.title
+    }
   }
 }
