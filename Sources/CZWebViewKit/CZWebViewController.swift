@@ -37,6 +37,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
       uiDelegate: self,
       navigationDelegate: self)
   }()
+  private weak var injectedWebView: WKWebView?
   
   private var progressView: UIProgressView?
   
@@ -80,9 +81,15 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     self.showLoadingProgress = showLoadingProgress
     super.init(nibName: nil, bundle: .main)
     
+    // Set up the injected WebView if applicable.
     if let injectedWebView = injectedWebView {
       // Set the `injectedWebView` as self.webView.
+      // TODO: set scriptMessageHandler in WKWebViewConfiguration.
       self.webView = injectedWebView
+      self.webView.uiDelegate = self
+      self.webView.navigationDelegate = self
+
+      self.injectedWebView = injectedWebView
     }
   }
   
@@ -99,7 +106,9 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   
   private func initSubviews() {
     setupObservers()
-    loadURL(self.url)
+    if self.injectedWebView == nil {
+      loadURL(self.url)
+    }
     
     // ProgressView.
     if showLoadingProgress {
