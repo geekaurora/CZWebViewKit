@@ -94,6 +94,12 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   
   required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
   
+  deinit {
+    observers.forEach {
+      $0.invalidate()
+    }
+  }
+  
   public override func loadView() {
     view = webView
     initSubviews()
@@ -164,10 +170,15 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     webView.loadHTMLString(string, baseURL: baseURL)
   }
   
-  deinit {
-    observers.forEach {
-      $0.invalidate()
-    }
+  // MARK: - Helper methods
+  
+  /// Get the html string of the loaded page.
+  public func getWebViewHtmlString(completion: @escaping (String?, Error?) -> Void) {
+    webView.evaluateJavaScript(
+      "document.documentElement.outerHTML.toString()",
+      completionHandler: { (html: Any?, error: Error?) in
+        completion(html as? String, error)
+      })
   }
 }
 
