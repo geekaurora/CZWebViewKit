@@ -61,6 +61,11 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
     guard let backForwardListItem = webView.backForwardList.item(at: distance) else {
       return nil
     }
+    MainQueueScheduler.asyncAfter(4) {
+      if let newBackForwardListItem = self.webView.backForwardList.item(at: 0) {
+        dbgPrint("backForwardListItem = \(backForwardListItem.url);\nnewBackForwardListItem = \(newBackForwardListItem.url)")
+      }
+    }
     return webView.go(to: backForwardListItem)
   }
 
