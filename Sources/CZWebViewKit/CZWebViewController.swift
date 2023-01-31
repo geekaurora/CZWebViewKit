@@ -40,14 +40,30 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private weak var injectedWebView: WKWebView?
   
   private var progressView: UIProgressView?
-  
+
+  // MARK: - Go backward / forward
+
   private lazy var goBackButtonItem: UIBarButtonItem = {
     let chevronLeft = UIImage(systemName: "chevron.left")
-    let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: webView, action: #selector(webView.goBack))
+//    let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: webView, action: #selector(webView.goBack))
+    let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: self, action: #selector(tappedGoBackButton))
     buttonItem.isEnabled = webView.canGoBack
     return buttonItem
   }()
-  
+
+  @objc
+  private func tappedGoBackButton() {
+    goBack()
+  }
+
+  @discardableResult
+  private func goBack(distance: Int = -1) -> WKNavigation? {
+    guard let backForwardListItem = webView.backForwardList.item(at: distance) else {
+      return nil
+    }
+    return webView.go(to: backForwardListItem)
+  }
+
   private lazy var goForwardButtonItem: UIBarButtonItem = {
     let chevronLeft = UIImage(systemName: "chevron.right")
     let buttonItem = UIBarButtonItem(image: chevronLeft, style: .plain, target: webView, action: #selector(webView.goForward))
