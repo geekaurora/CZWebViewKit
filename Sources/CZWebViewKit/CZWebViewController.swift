@@ -262,7 +262,7 @@ public extension CZWebViewController {
     
     let shouldPresentLink = (shouldPopupWhenTapLink && url?.host != initialHostName)
     
-    // TODO: Fix bug push multi times when load url - sub pages?
+    // TODO: Fix bug push multi times when load url - sub-frames.
     // Push to navigationController - native experience of navigationControlle, instead of Web.
     // let shouldPushLink = (url != self.url && navigationController != nil)
     let shouldPushLink = false
