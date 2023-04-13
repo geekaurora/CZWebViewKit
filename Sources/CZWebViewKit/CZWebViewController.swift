@@ -24,6 +24,8 @@ public protocol CZWebViewControllerDelegate: class {
  ```
  */
 public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
+  public typealias Completion = (WKNavigation) -> Void
+
   private var navigationBarType: CZWebViewNavigationBarType
   private var shouldPopupWhenTapLink: Bool
   private var initialHostName: String?
@@ -40,6 +42,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private weak var injectedWebView: WKWebView?
   
   private var progressView: UIProgressView?
+  private var completion: Completion?
 
   // MARK: - Go backward / forward
 
@@ -168,12 +171,14 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   // MARK: - Load URL
   
   /// Load remote URL.
-  public func loadURL(_ url: URL?) {
+  public func loadURL(_ url: URL?,
+                      completion: Completion? = nil) {
     guard let url = url else {
       return
     }
     CZPerfTracker.shared.endTracking(event: "CZWebViewController_BeforeRequest")
     self.url = url
+    self.completion = completion
     webView.load(URLRequest(url: url))
   }
   
@@ -298,6 +303,7 @@ public extension CZWebViewController {
   func webView(_ webView: WKWebView,
                didFinish navigation: WKNavigation!) {
     updateTitleIfNeeded()
+    self.completion?(navigation)
   }
 }
 

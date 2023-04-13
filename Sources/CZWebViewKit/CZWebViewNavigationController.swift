@@ -64,8 +64,9 @@ public class CZWebViewNavigationController: UIViewController {
     initSubviews()
   }
   
-  public func loadURL(_ url: URL?) {
-    webViewController.loadURL(url)
+  public func loadURL(_ url: URL?,
+                      completion: CZWebViewController.Completion? = nil) {
+    webViewController.loadURL(url, completion: completion)
   }
   
   public func loadFileURL(_ url: URL?) {
