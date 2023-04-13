@@ -254,6 +254,8 @@ public extension CZWebViewController {
   func webView(_ webView: WKWebView,
                decidePolicyFor navigationAction: WKNavigationAction,
                decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    CZPerfTracker.shared.endTracking(event: "decidePolicyFor")
+    
     if initialHostName == nil {
       initialHostName = navigationAction.request.url?.host
     }
@@ -291,10 +293,35 @@ public extension CZWebViewController {
     } else {
       decisionHandler(.allow)
     }
+
+//    MainQueueScheduler.async {
+//      Thread.sleep(forTimeInterval: 5)
+//    }
   }
-  
+
+  /// Tells the delegate that navigation from the main frame has started.
+  func webView(_ webView: WKWebView, didStartProvisionalNavigation: WKNavigation!) {
+    CZPerfTracker.shared.endTracking(event: "didStartProvisionalNavigation")
+
+//    MainQueueScheduler.async {
+//      Thread.sleep(forTimeInterval: 5)
+//    }
+  }
+
+  /// Tells the delegate that the web view has started to receive content for the main frame.
+  func webView(_ webView: WKWebView, didCommit: WKNavigation!) {
+    CZPerfTracker.shared.endTracking(event: "didCommit")
+
+//    MainQueueScheduler.async {
+//      Thread.sleep(forTimeInterval: 5)
+//    }
+
+  }
+
   func webView(_ webView: WKWebView,
                didFinish navigation: WKNavigation!) {
+    CZPerfTracker.shared.endTracking(event: "didFinish")
+
     updateTitleIfNeeded()
   }
 }
