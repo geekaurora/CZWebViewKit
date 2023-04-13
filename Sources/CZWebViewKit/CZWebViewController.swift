@@ -195,8 +195,10 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   
   /// Get the html string of the loaded page.
   public func getWebViewHtmlString(completion: @escaping (String?, Error?) -> Void) {
+
     webView.evaluateJavaScript(
-      "document.documentElement.outerHTML.toString()",
+      // "document.documentElement.outerHTML.toString()",
+      "document.body.innerHTML",
       completionHandler: { (html: Any?, error: Error?) in
         completion(html as? String, error)
       })
