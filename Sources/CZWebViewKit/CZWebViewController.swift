@@ -260,7 +260,9 @@ extension CZWebViewController: WKScriptMessageHandler {
 public extension CZWebViewController {
   func webView(_ webView: WKWebView,
                decidePolicyFor navigationAction: WKNavigationAction,
-               decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+               decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {    
+    CZSignpostHelper.shared.end()
+
     if initialHostName == nil {
       initialHostName = navigationAction.request.url?.host
     }
