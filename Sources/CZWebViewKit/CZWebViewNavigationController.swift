@@ -3,6 +3,13 @@ import CZUtils
 
 /**
  NavigationController that maintains the underlying WebViewController.
+
+ ### Usage
+ ```
+ import CZWebViewKit
+
+ CZWebViewNavigationController.present(url:navigationBarType:)
+ ```
 */
 public class CZWebViewNavigationController: UIViewController {
   
