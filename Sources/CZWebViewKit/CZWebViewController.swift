@@ -307,6 +307,16 @@ public extension CZWebViewController {
     updateTitleIfNeeded()
     self.completion?(navigation)
   }
+
+  /// Tells the delegate that navigation from the main frame has started.
+  func webView(_ webView: WKWebView, didStartProvisionalNavigation: WKNavigation!) {
+    dbgPrintWithFunc(self, "")
+  }
+
+  /// Tells the delegate that the web view has started to receive content for the main frame.
+  func webView(_ webView: WKWebView, didCommit: WKNavigation!) {
+    dbgPrintWithFunc(self, "")
+  }
 }
 
 // MARK: - WKUIDelegate
