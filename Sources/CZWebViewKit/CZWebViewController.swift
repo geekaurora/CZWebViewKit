@@ -263,6 +263,8 @@ public extension CZWebViewController {
                decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {    
     CZSignpostHelper.shared.end()
 
+    CZPerfTracker.shared.beginTracking(event: "CZWebViewController_LoadWebPage")
+
     if initialHostName == nil {
       initialHostName = navigationAction.request.url?.host
     }
@@ -304,6 +306,8 @@ public extension CZWebViewController {
   
   func webView(_ webView: WKWebView,
                didFinish navigation: WKNavigation!) {
+    CZPerfTracker.shared.endTracking(event: "CZWebViewController_LoadWebPage")
+
     updateTitleIfNeeded()
     self.completion?(navigation)
   }
