@@ -30,7 +30,7 @@ public class CZWebViewController: UIViewController, WKUIDelegate, WKNavigationDe
   private var shouldPopupWhenTapLink: Bool
   private var initialHostName: String?
   private var showLoadingProgress: Bool
-  
+  private var isFirstProgressCallback = true
   public var delegate: CZWebViewControllerDelegate?
   
   public private(set) lazy var webView: WKWebView = {
@@ -264,7 +264,6 @@ public extension CZWebViewController {
     CZSignpostHelper.shared.end()
 
     CZPerfTracker.shared.beginTracking(event: "CZWebViewController_LoadWebPage")
-    CZPerfTracker.shared.beginTracking(event: "CZWebViewController_LoadWebPage_KVO")
 
     if initialHostName == nil {
       initialHostName = navigationAction.request.url?.host
@@ -366,7 +365,7 @@ extension CZWebViewController {
     case #keyPath(WKWebView.isLoading):
       dbgPrint("webView.isLoading = \(webView.isLoading)")
       progressView?.isHidden = !webView.isLoading
-      
+
       // Read HTML from WebView.
       if !webView.isLoading {
         webView.evaluateJavaScript(
@@ -376,11 +375,17 @@ extension CZWebViewController {
             self?.delegate?.webViewDidFinishLoading(html: html as? String, error: error)
           })
       }
-      
+
     case #keyPath(WKWebView.estimatedProgress):
       progressView?.progress = Float(webView.estimatedProgress)
-      
+
+      if isFirstProgressCallback {
+        isFirstProgressCallback = false
+        CZPerfTracker.shared.beginTracking(event: "CZWebViewController_LoadWebPage_KVO")
+      }
+
       if progressView?.progress == 1 {
+        isFirstProgressCallback = true
         CZPerfTracker.shared.endTracking(event: "CZWebViewController_LoadWebPage_KVO")
       }
     case #keyPath(WKWebView.canGoBack):
