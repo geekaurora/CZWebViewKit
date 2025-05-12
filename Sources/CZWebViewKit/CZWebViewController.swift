@@ -264,6 +264,7 @@ public extension CZWebViewController {
     CZSignpostHelper.shared.end()
 
     CZPerfTracker.shared.beginTracking(event: "CZWebViewController_LoadWebPage")
+    CZPerfTracker.shared.beginTracking(event: "CZWebViewController_LoadWebPage_KVO")
 
     if initialHostName == nil {
       initialHostName = navigationAction.request.url?.host
@@ -378,6 +379,10 @@ extension CZWebViewController {
       
     case #keyPath(WKWebView.estimatedProgress):
       progressView?.progress = Float(webView.estimatedProgress)
+      
+      if progressView?.progress == 1 {
+        CZPerfTracker.shared.endTracking(event: "CZWebViewController_LoadWebPage_KVO")
+      }
     case #keyPath(WKWebView.canGoBack):
       print("canGoBack")
       goBackButtonItem.isEnabled = webView.canGoBack
